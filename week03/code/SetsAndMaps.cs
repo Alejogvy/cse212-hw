@@ -22,7 +22,21 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var set = new HashSet<string>(words);
+        var result = new HashSet<string>();
+
+        foreach (var word in words)
+        {
+            var reversed = new string(new char[] { word[1], word[0] });
+
+            if (set.Contains(reversed) && word != reversed)
+            {
+                var pair = word.CompareTo(reversed) < 0 ? $"{word} & {reversed}" : $"{reversed} & {word}";
+                result.Add(pair);
+            }
+        }
+
+        return result.ToArray();
     }
 
     /// <summary>
@@ -43,6 +57,18 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            if (fields.Length >= 4)
+            {
+                string degree = fields[3].Trim();
+                if (degrees.ContainsKey(degree))
+                {
+                    degrees[degree]++;
+                }
+                else
+                {
+                    degrees[degree] = 1;
+                }
+            }
         }
 
         return degrees;
@@ -67,7 +93,26 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        string clean1 = new string(word1.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+        string clean2 = new string(word2.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+
+        if (clean1.Length != clean2.Length) return false;
+
+        var count = new Dictionary<char, int>();
+
+        foreach (var c in clean1)
+        {
+            if (!count.ContainsKey(c)) count[c] = 0;
+            count[c]++;
+        }
+
+        foreach (var c in clean2)
+        {
+            if (!count.ContainsKey(c)) return false;
+            count[c]--;
+            if (count[c] < 0) return false;
+        }
+        return true;
     }
 
     /// <summary>
